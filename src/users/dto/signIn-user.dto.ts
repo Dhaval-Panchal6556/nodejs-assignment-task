@@ -1,12 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
+import { IsNotEmpty, IsOptional, IsString, Matches } from "class-validator";
 import {
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  Matches,
-} from "class-validator";
-import { INVALID_EMAIL_FORMAT, INVALID_PASSWORD_FORMAT } from "src/common/constants/response.constant";
+  INVALID_EMAIL_FORMAT,
+  INVALID_PASSWORD_FORMAT,
+} from "src/common/constants/response.constant";
 import { EmailRegex, PasswordRegex } from "src/common/regex/common.regex";
 
 export class UserSignInDto {

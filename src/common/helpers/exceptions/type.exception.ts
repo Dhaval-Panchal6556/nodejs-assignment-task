@@ -8,7 +8,7 @@ export const TypeExceptions = {
         error: "Not Found",
         statusCode: HttpStatus.NOT_FOUND,
       },
-      HttpStatus.NOT_FOUND
+      HttpStatus.NOT_FOUND,
     );
   },
 
@@ -19,7 +19,7 @@ export const TypeExceptions = {
         error: "Bad Request",
         statusCode: HttpStatus.BAD_REQUEST,
       },
-      HttpStatus.BAD_REQUEST
+      HttpStatus.BAD_REQUEST,
     );
   },
 
@@ -30,7 +30,7 @@ export const TypeExceptions = {
         error: "Already Exists",
         statusCode: HttpStatus.CONFLICT,
       },
-      HttpStatus.CONFLICT
+      HttpStatus.CONFLICT,
     );
   },
 
@@ -41,7 +41,7 @@ export const TypeExceptions = {
         error: "InvalidFile",
         statusCode: HttpStatus.BAD_REQUEST,
       },
-      HttpStatus.BAD_REQUEST
+      HttpStatus.BAD_REQUEST,
     );
   },
 
@@ -52,7 +52,7 @@ export const TypeExceptions = {
         message: message,
         data: {},
       },
-      HttpStatus.UNAUTHORIZED
+      HttpStatus.UNAUTHORIZED,
     );
   },
 

@@ -33,7 +33,7 @@ export class AuthenticationService {
     @InjectModel(Users.name)
     private readonly usersModel: Model<UsersDocument>,
     private readonly loggerService: LoggerService,
-    private readonly commonService: CommonService
+    private readonly commonService: CommonService,
   ) {}
 
   /**
@@ -68,7 +68,7 @@ export class AuthenticationService {
       // Hash the password before inserting
       const hash = await this.commonService.bcryptPassword(
         ADMIN_PASSWORD,
-        Number(process.env.PASSWORD_SALT)
+        Number(process.env.PASSWORD_SALT),
       );
 
       // Create the initial user in the database
@@ -131,7 +131,7 @@ export class AuthenticationService {
           lastName: findAdmin.lastName,
           role: findAdmin.role,
           accessToken: jwtToken,
-        })
+        }),
       );
     } catch (error) {
       // If any error occurs, throw a custom "Unknown Error" with the error message and status
@@ -171,14 +171,14 @@ export class AuthenticationService {
             resetToken: token,
             updatedDate: new Date().toISOString(),
           },
-        }
+        },
       );
 
       // Return successful response resetToken
       return res.status(statusOk).json(
         successResponse(statusOk, FORGOT_PASS_SUCC, {
           resetUrlLink: `${process.env.ADMIN_URL}reset-password/${token}`,
-        })
+        }),
       );
     } catch (error) {
       // If any error occurs, throw a custom "Unknown Error" with the error message and status
@@ -210,7 +210,7 @@ export class AuthenticationService {
       // Hash the new password using bcrypt
       const newPassword = await this.commonService.bcryptPassword(
         body.newPassword,
-        Number(process.env.PASSWORD_SALT)
+        Number(process.env.PASSWORD_SALT),
       );
 
       // Update the user's password and reset token
@@ -220,7 +220,7 @@ export class AuthenticationService {
         },
         {
           $set: { password: newPassword, reset_token: "" },
-        }
+        },
       );
 
       return res

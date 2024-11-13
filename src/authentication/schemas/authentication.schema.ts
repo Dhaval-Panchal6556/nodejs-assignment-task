@@ -1,9 +1,9 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { HydratedDocument } from "mongoose";
 
 export type AdminDocument = HydratedDocument<Admin>;
 
-@Schema({ collection: 'admin', timestamps: true, versionKey: false })
+@Schema({ collection: "admin", timestamps: true, versionKey: false })
 export class Admin {
   @Prop({ required: true })
   firstName: string;
@@ -20,7 +20,7 @@ export class Admin {
   @Prop({ required: true })
   role: string;
 
-  @Prop({ default: '' })
+  @Prop({ default: "" })
   resetToken: string;
 
   @Prop({ required: true, default: true })

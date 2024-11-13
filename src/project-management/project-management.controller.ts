@@ -21,14 +21,14 @@ import { PaginationDto } from "src/common/dto/common.dto";
 @ApiBearerAuth()
 export class ProjectManagementController {
   constructor(
-    private readonly projectManagementService: ProjectManagementService
+    private readonly projectManagementService: ProjectManagementService,
   ) {}
 
   @Post("add")
   async createProject(
     @Body() body: CreateProjectManagementDto,
     @Req() request: Request,
-    @Res() response: Response
+    @Res() response: Response,
   ) {
     return this.projectManagementService.createProject(body, request, response);
   }
@@ -38,20 +38,20 @@ export class ProjectManagementController {
     @Param("id") id: string, // Get user ID from URL params
     @Body() body: UpdateProjectManagementDto,
     @Req() request: Request,
-    @Res() response: Response
+    @Res() response: Response,
   ) {
     return this.projectManagementService.updateProject(
       id,
       body,
       request,
-      response
+      response,
     );
   }
 
   @Get("view/:id")
   async viewProject(
     @Param("id") id: string, // Get user ID from URL params
-    @Res() response: Response
+    @Res() response: Response,
   ) {
     return this.projectManagementService.viewProject(id, response);
   }
@@ -60,7 +60,7 @@ export class ProjectManagementController {
   async listProject(
     @Body() body: PaginationDto,
     @Req() request: Request,
-    @Res() response: Response
+    @Res() response: Response,
   ) {
     return this.projectManagementService.listProject(body, request, response);
   }
@@ -68,7 +68,7 @@ export class ProjectManagementController {
   @Delete("delete/:id")
   async deleteProject(
     @Param("id") id: string, // Get user ID from URL params
-    @Res() response: Response
+    @Res() response: Response,
   ) {
     return this.projectManagementService.deleteProject(id, response);
   }

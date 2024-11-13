@@ -33,7 +33,13 @@ export class ProjectManagementService {
       _id: new mongoose.Types.ObjectId(id),
     });
   }
-
+  /**
+   * Creates a new project for the authenticated user.
+   *
+   * @param body - Project data (e.g., name, description).
+   * @param request - The request object containing the user's ID.
+   * @param response - The response object to return the result.
+   */
   async createProject(
     body: CreateProjectManagementDto,
     request,
@@ -62,6 +68,14 @@ export class ProjectManagementService {
     }
   }
 
+  /**
+   * Updates an existing project for the authenticated user.
+   *
+   * @param id - The project ID to be updated.
+   * @param body - The data to update the project with.
+   * @param request - The request object containing the authenticated user's ID.
+   * @param response - The response object to return the result.
+   */
   async updateProject(
     id: string,
     body: UpdateProjectManagementDto,
@@ -82,7 +96,9 @@ export class ProjectManagementService {
       });
 
       if (!findProject) {
-        throw TypeExceptions.NotFoundCommonFunction("Project Not Found");
+        throw TypeExceptions.NotFoundCommonFunction(
+          PROJECT_MSG.PROJECT_NOT_FOUND
+        );
       }
 
       if (findProject.userId.toString() === reqId.toString()) {
@@ -98,7 +114,7 @@ export class ProjectManagementService {
         );
       } else {
         throw TypeExceptions.BadReqCommonFunction(
-          "This Project is not linked to your user account."
+          PROJECT_MSG.PROJECT_IS_NOT_LINKED
         );
       }
 
@@ -112,6 +128,12 @@ export class ProjectManagementService {
     }
   }
 
+  /**
+   * Retrieves and views the details of a specific project by ID.
+   *
+   * @param id - The ID of the project to retrieve.
+   * @param response - The response object to return the result.
+   */
   async viewProject(id: string, response) {
     try {
       const findProject = await this.projectModel.findOne({
@@ -119,13 +141,15 @@ export class ProjectManagementService {
       });
 
       if (!findProject) {
-        throw TypeExceptions.NotFoundCommonFunction("Project Not Found");
+        throw TypeExceptions.NotFoundCommonFunction(
+          PROJECT_MSG.PROJECT_NOT_FOUND
+        );
       }
 
       /// success response
       return response.status(statusOk).json(
         successResponse(statusOk, PROJECT_MSG.PROJECT_VIEW_SUCC, {
-          ...findProject,
+          findProject,
         })
       );
     } catch (error) {
@@ -134,6 +158,13 @@ export class ProjectManagementService {
     }
   }
 
+  /**
+   * Lists all projects for the authenticated user with pagination, search, and sorting.
+   *
+   * @param body - Pagination, sorting, and search parameters.
+   * @param request - The request object containing the authenticated user's ID.
+   * @param res - The response object to return the result.
+   */
   async listProject(body: PaginationDto, request, res: Response) {
     try {
       const reqId = request.user._id;
@@ -148,7 +179,7 @@ export class ProjectManagementService {
 
       aggregationQuery.push({
         $match: {
-          _id: reqId,
+          userId: new mongoose.Types.ObjectId(reqId),
         },
       });
 
@@ -249,6 +280,12 @@ export class ProjectManagementService {
     }
   }
 
+  /**
+   * Deletes a specific project by ID.
+   *
+   * @param id - The ID of the project to be deleted.
+   * @param response - The response object to return the result.
+   */
   async deleteProject(id: string, response) {
     try {
       const findProject = await this.projectModel.findOne({
@@ -256,7 +293,9 @@ export class ProjectManagementService {
       });
 
       if (!findProject) {
-        throw TypeExceptions.NotFoundCommonFunction("Project Not Found");
+        throw TypeExceptions.NotFoundCommonFunction(
+          PROJECT_MSG.PROJECT_NOT_FOUND
+        );
       }
 
       await this.projectModel.findOneAndDelete({

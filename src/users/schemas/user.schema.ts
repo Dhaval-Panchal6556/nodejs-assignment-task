@@ -27,10 +27,10 @@ export class Users {
   @Prop({ required: true })
   password: string;
 
-  @Prop({ required: true})
+  @Prop({ required: true })
   role: string;
 
-  @Prop({ required: false})
+  @Prop({ required: false })
   resetToken: string;
 
   @Prop({ required: true, default: true })

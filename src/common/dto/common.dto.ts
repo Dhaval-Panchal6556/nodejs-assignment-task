@@ -13,7 +13,10 @@ import {
   Matches,
 } from "class-validator";
 import { EmailRegex, PasswordRegex } from "../regex/common.regex";
-import { INVALID_EMAIL_FORMAT, INVALID_PASSWORD_FORMAT } from "../constants/response.constant";
+import {
+  INVALID_EMAIL_FORMAT,
+  INVALID_PASSWORD_FORMAT,
+} from "../constants/response.constant";
 
 export class LoginDto {
   @ApiProperty()

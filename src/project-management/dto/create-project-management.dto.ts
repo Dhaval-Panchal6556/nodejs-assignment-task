@@ -1,7 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import {
   IsDateString,
-  IsNotEmpty,
   IsOptional,
   IsString,
   ValidateIf,
@@ -10,12 +9,12 @@ import mongoose from "mongoose";
 
 export class CreateProjectManagementDto {
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   title: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   description: string;
 
@@ -34,7 +33,7 @@ export class CreateProjectManagementDto {
   userId: mongoose.Types.ObjectId;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   status: string;
 }

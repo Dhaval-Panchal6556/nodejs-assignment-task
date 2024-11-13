@@ -29,7 +29,7 @@ export class UsersController {
   async updateUser(
     @Body() body: UpdateUserDto,
     @Req() request: Request,
-    @Res() response: Response
+    @Res() response: Response,
   ) {
     return this.usersService.updateUser(body, request, response);
   }

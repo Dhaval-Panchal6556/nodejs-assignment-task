@@ -14,12 +14,20 @@ export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
   @Post("add")
-  createTask(@Body() createTaskDto: CreateTaskDto, @Res() res: Response) {
-    return this.taskService.createTask(createTaskDto, res);
+  createTask(
+    @Body() createTaskDto: CreateTaskDto,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    return this.taskService.createTask(createTaskDto, req, res);
   }
 
   @Post("list")
-  listTask(@Body() taskListDto: TaskListPaginationDto, @Res() res: Response, @Req() req : Request) {
+  listTask(
+    @Body() taskListDto: TaskListPaginationDto,
+    @Res() res: Response,
+    @Req() req: Request,
+  ) {
     return this.taskService.listTask(taskListDto, res, req);
   }
 
@@ -31,7 +39,7 @@ export class TaskController {
   @Post("updateTaskDetails")
   updateTaskDetails(
     @Body() updateTaskDetailsDto: UpdateTaskDetailsDto,
-    @Res() res: Response
+    @Res() res: Response,
   ) {
     return this.taskService.updateTaskDetails(updateTaskDetailsDto, res);
   }

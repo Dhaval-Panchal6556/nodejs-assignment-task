@@ -17,7 +17,12 @@ export class CreateTaskDto {
   assignedTo: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   developerId: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  productId: string;
 }

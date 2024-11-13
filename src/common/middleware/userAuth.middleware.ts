@@ -15,7 +15,7 @@ export class userAuthMiddleware implements NestMiddleware {
   constructor(
     @InjectModel(Users.name)
     private userModel: Model<UsersDocument>,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
   ) {}
 
   /**
@@ -25,7 +25,6 @@ export class userAuthMiddleware implements NestMiddleware {
    * @param {NextFunction} next - The Express next function.
    */
   async use(req: Request, res: Response, next: (error?: unknown) => void) {
-    console.log("req: ", req);
     // Check if the request has an Authorization header and if it starts with "Bearer"
     if (
       req.headers.authorization &&
@@ -33,7 +32,6 @@ export class userAuthMiddleware implements NestMiddleware {
     ) {
       // Extract the secret key and access token from the Authorization header
       const secretKey = process.env.JWT_TOKEN_SECRET;
-      console.log("secretKey: ", secretKey);
       const accessToken = req.headers.authorization.split(" ")[1];
 
       try {
@@ -42,7 +40,6 @@ export class userAuthMiddleware implements NestMiddleware {
           secret: secretKey,
         });
 
-        console.log("letData: ", letData);
         // Extract user information from the decoded token
         const loginUserId = letData._id;
 
@@ -50,9 +47,8 @@ export class userAuthMiddleware implements NestMiddleware {
         const findUser = await this.findUserByType(
           letData.type,
           loginUserId,
-          req
+          req,
         );
-        console.log("findUser: ", findUser);
 
         // Check if the user is null (not found)
         if (findUser == null) {
@@ -107,17 +103,14 @@ export class userAuthMiddleware implements NestMiddleware {
    * @returns {Promise} - A promise that resolves to the found user or null.
    */
   async findUserByType(type: string, loginUserId: number, req) {
-    console.log("type: ", type);
     // Map user type to corresponding model based on request path
     const typeModelMap = {
       admin: req.baseUrl.startsWith("/admin/") && this.userModel,
       user: req.baseUrl.startsWith("/users/") && this.userModel,
     };
-    console.log("typeModelMap: ", typeModelMap);
 
     // Get the model based on the user type
     const modelName = typeModelMap[type];
-    console.log("modelName: ", modelName);
 
     // If a valid model is found for the type
     if (modelName) {
@@ -125,7 +118,6 @@ export class userAuthMiddleware implements NestMiddleware {
       const findUser = await modelName.findOne({
         _id: loginUserId,
       });
-      console.log("findUser: ", findUser);
 
       return findUser;
     } else {

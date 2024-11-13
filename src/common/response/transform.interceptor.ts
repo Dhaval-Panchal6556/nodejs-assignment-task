@@ -3,11 +3,11 @@ import {
   NestInterceptor,
   ExecutionContext,
   CallHandler,
-} from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { ResponseMessageKey } from 'src/common/decorators/response.decorator';
+} from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
+import { ResponseMessageKey } from "src/common/decorators/response.decorator";
 
 export interface Response<T> {
   data: T;
@@ -25,7 +25,7 @@ export class TransformInterceptor<T>
   ): Observable<Response<T>> {
     const responseMessage =
       this.reflector.get<string>(ResponseMessageKey, context.getHandler()) ??
-      '';
+      "";
 
     return next.handle().pipe(
       map((data) => ({

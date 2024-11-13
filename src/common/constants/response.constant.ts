@@ -38,6 +38,7 @@ export const TASK_MSG = {
   TASK_LIST_SUCC: "Task list fetch successfully.",
   TASK_UPDATE_DETAILS_SUCC: "Task details updated successfully.",
   TASK_DELETE_SUCC: "Task deleted successfully.",
+  TASK_NOT_FOUND: "Task is not found",
 };
 
 export const USER_MSG = {
@@ -53,6 +54,8 @@ export const PROJECT_MSG = {
   PROJECT_VIEW_SUCC: "Project details fetch successfully",
   PROJECT_DELETED_SUCC: "Project deleted successfully",
   PROJECT_LIST_SUCC: "Project listed successfully",
+  PROJECT_NOT_FOUND: "Project is not found",
+  PROJECT_IS_NOT_LINKED: "This Project is not linked to your user account.",
 };
 
 /*Admin Msg*/

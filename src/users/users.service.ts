@@ -29,7 +29,7 @@ export class UsersService {
   constructor(
     @InjectModel(Users.name) private userModel: Model<UsersDocument>,
     private myLogger: LoggerService,
-    private commonService: CommonService
+    private commonService: CommonService,
   ) {
     // Due to transient scope, UsersService has its own unique instance of MyLogger,
     // so setting context here will not affect other instances in other services
@@ -82,7 +82,7 @@ export class UsersService {
       /// hashing the password
       const hash = await this.commonService.bcryptPassword(
         body.password,
-        Number(process.env.PASSWORD_SALT)
+        Number(process.env.PASSWORD_SALT),
       );
 
       /// assigning encrypted password to body
@@ -108,7 +108,7 @@ export class UsersService {
           lastName: createUser.lastName,
           email: createUser.email,
           accessToken: jwtToken,
-        })
+        }),
       );
     } catch (error) {
       // If any error occurs, throw a custom "Unknown Error" with the error message and status
@@ -166,7 +166,7 @@ export class UsersService {
           role: findUser.role,
           email: findUser.email,
           accessToken: jwtToken,
-        })
+        }),
       );
     } catch (error) {
       // If any error occurs, throw a custom "Unknown Error" with the error message and status
@@ -185,8 +185,6 @@ export class UsersService {
    * @throws CustomError.UnknownError - If any unexpected error occurs during the update.
    */
   async updateUser(body: UpdateUserDto, request, response: Response) {
-    console.log("body: ", body);
-    console.log("request: ", request);
     try {
       const reqId = request.user._id;
 
@@ -204,7 +202,7 @@ export class UsersService {
           $set: {
             ...body,
           },
-        }
+        },
       );
 
       /// success response
@@ -249,7 +247,7 @@ export class UsersService {
       return response
         .status(statusOk)
         .json(
-          successResponse(statusOk, USER_MSG.USER_GET_SUCC, { ...findUser })
+          successResponse(statusOk, USER_MSG.USER_GET_SUCC, { ...findUser }),
         );
     } catch (error) {
       // If any error occurs, throw a custom "Unknown Error" with the error message and status

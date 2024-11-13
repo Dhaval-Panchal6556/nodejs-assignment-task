@@ -1,4 +1,4 @@
-import { HttpStatus } from '@nestjs/common';
+import { HttpStatus } from "@nestjs/common";
 
 export const statusBadRequest = HttpStatus.BAD_REQUEST;
 export const statusUnauthorized = HttpStatus.UNAUTHORIZED;

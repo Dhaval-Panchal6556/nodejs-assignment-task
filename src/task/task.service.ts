@@ -19,16 +19,22 @@ export class TaskService {
     private readonly taskModel: Model<TasksDocument>
   ) {}
 
-  async createTask(body: CreateTaskDto, res: Response) {
+  /**
+   * Creates a new task and assigns it to a user and a product.
+   *
+   * @param body - Task data (e.g., title, description, assignedTo, productId).
+   * @param req - The request object containing the authenticated user's ID.
+   * @param res - The response object to return the result.
+   */
+  async createTask(body: CreateTaskDto, req, res: Response) {
     try {
       const insertObj = {
         ...body,
         assignedTo: body.assignedTo
           ? new mongoose.Types.ObjectId(body.assignedTo)
           : "",
-        developerId: new mongoose.Types.ObjectId(body.developerId),
-        createdDate: new Date().toISOString(),
-        updatedDate: new Date().toISOString(),
+        developerId: new mongoose.Types.ObjectId(req.user._id),
+        productId: new mongoose.Types.ObjectId(body.productId),
       };
 
       await this.taskModel.create(insertObj);
@@ -41,13 +47,19 @@ export class TaskService {
     }
   }
 
+  /**
+   * Lists tasks assigned to or created by the authenticated user, with pagination, sorting, and status categorization.
+   *
+   * @param body - Pagination and filtering parameters (e.g., page, limit).
+   * @param res - The response object to send back the task list.
+   * @param req - The request object containing the authenticated user's ID.
+   */
   async listTask(body: TaskListPaginationDto, res, req) {
     try {
       const limit = body.limit ? Number(body.limit) : 10;
       const page = body.page ? Number(body.page) : 1;
       const skip = (page - 1) * limit;
 
-      console.log("req.user._id: ", req.user._id);
       const aggregateQuery = [];
 
       aggregateQuery.push({
@@ -70,7 +82,7 @@ export class TaskService {
 
       aggregateQuery.push({
         $lookup: {
-          from: "table_developer",
+          from: "table_user",
           localField: "assignedTo",
           foreignField: "_id",
           as: "assignedDetails",
@@ -233,6 +245,12 @@ export class TaskService {
     }
   }
 
+  /**
+   * Updates the status of a task, and sets the `inProgressDate` when the task status is updated to in-progress.
+   *
+   * @param body - The request body containing task update details (task ID and status).
+   * @param res - The response object to send back the success message.
+   */
   async updateTask(body: UpdateTaskDto, res) {
     try {
       const findTask = await this.taskModel.findOne({
@@ -240,7 +258,7 @@ export class TaskService {
       });
 
       if (!findTask) {
-        throw TypeExceptions.NotFoundCommonFunction("Task is not found");
+        throw TypeExceptions.NotFoundCommonFunction(TASK_MSG.TASK_NOT_FOUND);
       }
 
       await this.taskModel.findOneAndUpdate(
@@ -259,6 +277,12 @@ export class TaskService {
     }
   }
 
+  /**
+   * Updates task details including the task's assigned user.
+   *
+   * @param body - The request body containing the task ID and updated task details.
+   * @param res - The response object to send back the success message.
+   */
   async updateTaskDetails(body: UpdateTaskDetailsDto, res) {
     try {
       const findTask = await this.taskModel.findOne({
@@ -266,7 +290,7 @@ export class TaskService {
       });
 
       if (!findTask) {
-        throw TypeExceptions.NotFoundCommonFunction("Task is not found");
+        throw TypeExceptions.NotFoundCommonFunction(TASK_MSG.TASK_NOT_FOUND);
       }
 
       await this.taskModel.findOneAndUpdate(
@@ -287,6 +311,12 @@ export class TaskService {
     }
   }
 
+  /**
+   * Deletes a task based on the provided task ID.
+   *
+   * @param body - The request body containing the task ID to be deleted.
+   * @param res - The response object to send back the success message.
+   */
   async deleteTask(body: DeleteTaskDto, res) {
     try {
       const findTask = await this.taskModel.findOne({
@@ -294,7 +324,7 @@ export class TaskService {
       });
 
       if (!findTask) {
-        throw TypeExceptions.NotFoundCommonFunction("Task is not found");
+        throw TypeExceptions.NotFoundCommonFunction(TASK_MSG.TASK_NOT_FOUND);
       }
 
       await this.taskModel.findOneAndDelete({

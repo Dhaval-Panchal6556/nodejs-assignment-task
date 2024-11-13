@@ -12,7 +12,7 @@ describe("ProjectManagementController", () => {
     }).compile();
 
     controller = module.get<ProjectManagementController>(
-      ProjectManagementController
+      ProjectManagementController,
     );
   });
 
