@@ -7,6 +7,6 @@ export default registerAs("database", () => ({
   user: process.env.DATABASE_USER,
   password: process.env.DATABASE_PASS,
   mongo: {
-    connectionString: process.env.DATABASE_CONNECTION,
+    connectionString: process.env.DATABASE_CONNECTION_URL,
   },
 }));

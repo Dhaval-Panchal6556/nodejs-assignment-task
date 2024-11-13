@@ -5,9 +5,7 @@ import { ConfigService } from "@nestjs/config";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { AppModule } from "./app.module";
 import { LoggerService } from "./common/logger/logger.service";
-import { HttpExceptionFilter } from "./common/exceptions/http-exception.filter";
 import helmet from "helmet";
-import { AppEnvironment } from "./common/constants/enum.constant";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -28,9 +26,7 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
 
-  if (appConfig.environment != AppEnvironment.PRODUCTION) {
-    SwaggerModule.setup("/", app, document);
-  }
+  SwaggerModule.setup("/", app, document);
 
   // Apply custom logger
   app.useLogger(new LoggerService());
@@ -47,11 +43,15 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
-    }),
+    })
   );
 
-  // Apply the HttpExceptionFilter globally
-  app.useGlobalFilters(new HttpExceptionFilter());
+  /// set global validation pipe
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+    })
+  );
 
   await app.listen(appConfig.port);
 }

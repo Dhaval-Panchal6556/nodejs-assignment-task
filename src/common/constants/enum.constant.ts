@@ -1,4 +1,5 @@
-export enum AppEnvironment {
-  DEVELOPMENT = "development",
-  PRODUCTION = "production",
-}
+export const USER_TYPES = {
+  USER: "user",
+  ADMIN: "admin",
+  GUEST: "guest",
+};

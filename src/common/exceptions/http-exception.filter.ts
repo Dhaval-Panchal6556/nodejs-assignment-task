@@ -3,65 +3,38 @@ import {
   Catch,
   ArgumentsHost,
   HttpException,
-  Logger,
   HttpStatus,
 } from "@nestjs/common";
-import { Request, Response } from "express";
-import { CustomError } from "../helpers/exceptions";
+import { isArray } from "class-validator";
 
-@Catch(HttpException)
-export class HttpExceptionFilter implements ExceptionFilter {
-  private readonly logger = new Logger(HttpExceptionFilter.name);
-
+@Catch()
+export class CustomExceptionFilter implements ExceptionFilter {
   catch(exception, host: ArgumentsHost) {
-    const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
-    // Custom error handling logic
-    if (!exception?.response?.error) {
-      exception = CustomError.UnknownError();
+    try {
+      const ctx = host.switchToHttp();
+      const response = ctx.getResponse();
+      const status =
+        exception instanceof HttpException
+          ? exception.getStatus()
+          : HttpStatus.INTERNAL_SERVER_ERROR;
+
+      let message: string = exception
+        ? exception.message
+        : "Internal server error";
+
+      if (exception?.response?.message && isArray(exception.response.message)) {
+        message = exception.response.message[0];
+      } else if (exception?.response?.message) {
+        message = exception.response.message;
+      }
+
+      response.status(status).json({
+        statusCode: status,
+        message: message,
+        data: {},
+      });
+    } catch (error) {
+      console.log("exception filter error 2:", error);
     }
-
-    let statusCode = this.getStatus(exception);
-    let message = this.extractMessage(exception);
-    //Handle dto validation
-    if (
-      exception?.response?.message &&
-      exception?.response?.error === "Bad Request"
-    ) {
-      statusCode = HttpStatus.BAD_REQUEST;
-      message = exception.response.message;
-    }
-
-    const body = this.createResponseBody(statusCode, message, request.url);
-
-    this.logger.warn(
-      `${statusCode} - ${message} - ${request.method} ${request.url}`,
-    );
-
-    response.status(statusCode).json(body);
-  }
-
-  private getStatus(exception): number {
-    if (exception instanceof HttpException) {
-      return exception.getStatus();
-    }
-    return HttpStatus.INTERNAL_SERVER_ERROR; // Internal Server Error for unknown exceptions
-  }
-
-  private extractMessage(exception): string {
-    if (exception instanceof HttpException) {
-      return exception.message || "Unexpected error occurred";
-    }
-    return exception.message || "An unknown error occurred";
-  }
-
-  private createResponseBody(statusCode: number, message: string, url: string) {
-    return {
-      statusCode,
-      message,
-      timestamp: new Date().toISOString(),
-      endpoint: url,
-    };
   }
 }
